@@ -21,6 +21,19 @@ Import using `Import-Module` as you would any other module:
 
 The chosen syntax attempts to balance the simplicity of interface definitions found in C#, including the type signature layout found in that language and the need to easily parse the syntactical elements as PowerShell functions (hence the property/method prefix keywords).
 
+### Commands
+
+#### `interface`
+
+A Legislator-generated interface starts with the `interface` command. It takes two positional mandatory parameters - a name and a scriptblock containing the interface declaration:
+
+    interface IName {
+
+    }
+
+
+#### `property`
+Property declarations in Legislator look like implicit properties in C#, prefixed with keyword `property`.
 Thus, the following interface definition in Legislator:
 
     interface IPoint {
@@ -36,11 +49,12 @@ is equivalent to the following interface definition in C#:
         int Y;
     }
 
-And this example:
+
+#### `method`
+
+This example:
 
     interface IWell {
-        property IPoint Location
-        
         method void DropCoin([Coin])
     }
 
@@ -48,14 +62,31 @@ is equivalent to the following in C#:
 
     interface IWell
     {
-        IPoint Location;
-
         void DropCoin(Coin c);
     }
 
-Legislator currently supports `method` and `property` members.
+#### `event`
 
-Due to limited usefulness, access modifiers are not supported, all generated interfaces default to Public.
+The following event declaration in Legislator:
+
+    interface ICar {
+        event EventHandler[EventArgs] EngineStarted
+    }
+
+is equivalent to:
+
+    interface ICar
+    {
+        event EventHandler<EventArgs> EngineStarted;
+    }
+
+in C#
+
+### Syntax notes
+
+Legislator currently supports `method`, `property` and `event` members. No plans to supporting index accessor syntax.
+
+Due to limited usefulness, access modifiers are also not supported, all generated interfaces default to Public.
 
 Parameter naming for methods is also not currently support.
 
@@ -90,11 +121,17 @@ The following example defines a (_very_) rudimentary Calculator interface, and u
     class MathStudent 
     {
         # Any good student always carries a calculator around
-        [ICalculator]$Calculator
+        hidden [ICalculator]$Calculator
 
         MathStudent([ICalculator]$Calculator)
         {
             $this.Calculator = $Calculator
+        }
+
+        # ehh, 5 was it?
+        [int] Say2plus2()
+        {
+            return $this.Calculator.Add(2,2)
         }
     }
     
@@ -143,7 +180,10 @@ The following example defines a (_very_) rudimentary Calculator interface, and u
     $Jimmy = [MathStudent]::new([SimpleCalculator]::new())
     
     # Bobby comes from a long lineage of Ivy league snobs
-    $Bobby = [MathStudent]::new([CalculatorPlusPlus])
+    $Bobby = [MathStudent]::new([CalculatorPlusPlus]::new())
+
+    # But any of them will do
+    $Jimmy,$Bobby |ForEach-Object Say2plus2
 
 ## Contributing
 
