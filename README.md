@@ -9,7 +9,7 @@ I've heard a number of powershell users ask for the ability to _define_ .NET int
 
 The following example defines a (_very_) rudimentary Calculator interface, and utilises it for flexible dependency injection
 
-    . .\Legislator.ps1
+    Import-Module .\src\Legislator.psd1
     
     # Define a calculator interface with two common arithmetic methods
     interface ICalculator {
