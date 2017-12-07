@@ -2,9 +2,7 @@ $ModuleManifestName = 'Legislator.psd1'
 $ModuleManifestPath = "$PSScriptRoot\..\src\$ModuleManifestName"
 
 if (!$SuppressImportModule) {
-    # -Scope Global is needed when running tests from inside of psake, otherwise
-    # the module's functions cannot be found in the PSCache\ namespace
-    Import-Module $ModuleManifestPath -Scope Global
+    Import-Module $ModuleManifestPath -Scope Global -Force
 }
 
 Describe 'Module Manifest Tests' {

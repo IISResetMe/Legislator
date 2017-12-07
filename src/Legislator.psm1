@@ -45,5 +45,5 @@ foreach($import in @($Public;$Private))
 }
 
 # Export public functions
-Write-Verbose "Exporting public functions: interface, method, property"
-Export-ModuleMember -Function interface,method,property
+Write-Verbose "Exporting public functions: $($Public.BaseName)"
+Export-ModuleMember -Function $Public.BaseName
