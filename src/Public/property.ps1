@@ -8,7 +8,8 @@ function property {
         [string]$TypeName,
 
         [Parameter(Mandatory = $true, Position = 1)]
-        [string]$Name,
+        [Alias('Name')]
+        [string]$PropertyName,
 
         [Parameter(Mandatory = $false, Position = 2)]
         [ValidateSet('ReadOnly')]
@@ -23,18 +24,17 @@ function property {
         return
     }
 
-    $property = $Legislator.DefineProperty($Name, [PropertyAttributes]::HasDefault, [CallingConventions]::HasThis, $Type, $null)
+    $property = $Legislator.DefineProperty($PropertyName, [PropertyAttributes]::HasDefault, [CallingConventions]::HasThis, $Type, $null)
 
     $propertyMethodAttributes = @(
         'Public', 'HideBySig', 'SpecialName', 'Abstract', 'Virtual', 'NewSlot'
     ) -as [MethodAttributes]
 
-    $getMethod = $Legislator.DefineMethod("get_" + $Name, $propertyMethodAttributes, $Type, [Type]::EmptyTypes)
-
+    $getMethod = . method -TypeName:$Type.FullName -Name:"get_$PropertyName" -Attributes:$propertyMethodAttributes -PassThru:$true
     $property.SetGetMethod($getMethod)
 
     if($Option -ne 'ReadOnly') {
-        $setMethod = $Legislator.DefineMethod("set_" + $Name, $propertyMethodAttributes, $null, @( $Type ))
+        $setMethod = . method -TypeName:"void" -Name:"set_$PropertyName" -Attributes:$propertyMethodAttributes -ParameterTypes @( $Type ) -PassThru:$true
         $null = $setMethod.DefineParameter(1, [ParameterAttributes]::None, 'value');
 
         $property.SetSetMethod($setMethod)

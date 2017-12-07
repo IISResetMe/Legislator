@@ -8,11 +8,18 @@ function method {
         [string]$TypeName,
 
         [Parameter(Mandatory = $true, Position = 1)]
-        [string]$Name,
+        [Alias('Name')]
+        [string]$MethodName,
 
         [Parameter(Mandatory = $false, Position = 2)]
         [AllowEmptyCollection()]
-        [Type[]]$ParameterTypes
+        [Type[]]$ParameterTypes,
+
+        [Parameter(DontShow)]
+        [MethodAttributes]$Attributes,
+
+        [Parameter(DontShow)]
+        [switch]$PassThru
     )
 
     try{
@@ -27,5 +34,10 @@ function method {
         'Public', 'HideBySig', 'Abstract', 'Virtual', 'NewSlot'
     ) -as [MethodAttributes]
 
-    $null = $Legislator.DefineMethod($Name, $interfaceMethodAttributes, $ReturnType, $ParameterTypes)
+    $interfaceMethodAttributes = $interfaceMethodAttributes -bor $Attributes
+
+    $method = $Legislator.DefineMethod($MethodName, $interfaceMethodAttributes, $ReturnType, $ParameterTypes)
+    if($PassThru){
+        return $method
+    }
 }
