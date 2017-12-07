@@ -12,10 +12,7 @@ function property {
 
         [Parameter(Mandatory = $false, Position = 2)]
         [ValidateSet('ReadOnly')]
-        [string]$Option,
-
-        [Parameter(DontShow = $true)]
-        [TypeBuilder][ref]$Legislator
+        [string]$Option
     )
 
     try{
@@ -54,10 +51,7 @@ function method {
 
         [Parameter(Mandatory = $false, Position = 2)]
         [AllowEmptyCollection()]
-        [Type[]]$ParameterTypes,
-
-        [Parameter(DontShow = $true)]
-        [TypeBuilder][ref]$Legislator
+        [Type[]]$ParameterTypes
     )
 
     try{
@@ -112,13 +106,7 @@ function interface {
     
     $Legislator = $moduleBuilder.DefineType($Name, $interfaceAttributes)
 
-    $PSDefaultParameterValues['property:Legislator'] = ([ref]$Legislator)
-    $PSDefaultParameterValues['method:Legislator']   = ([ref]$Legislator)
-    
     $null = . $Definition
-
-    $PSDefaultParameterValues.Remove('property:Legislator')
-    $PSDefaultParameterValues.Remove('method:Legislator')
 
     $finalType = $Legislator.CreateType()
  
