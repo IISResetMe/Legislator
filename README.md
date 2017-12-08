@@ -45,8 +45,16 @@ is equivalent to the following interface definition in C#:
 
     interface IPoint 
     {
-        int X;
-        int Y;
+        int X
+        {
+            get;
+            set;
+        }
+        int Y
+        {
+            get;
+            set;
+        }
     }
 
 
