@@ -16,6 +16,8 @@ function property {
         [string]$Option
     )
 
+    Assert-Legislator -MemberType property
+
     try{
         $Type = [Type]$TypeName
     }

@@ -22,6 +22,8 @@ function method {
         [switch]$PassThru
     )
 
+    Assert-Legislator -MemberType method
+
     try{
         $ReturnType = [Type]$TypeName
     }

@@ -15,6 +15,8 @@ function event {
         [string]$Option
     )
 
+    Assert-Legislator -MemberType event
+
     try{
         $handlerType = [Type]$TypeName
     }
