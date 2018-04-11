@@ -14,7 +14,7 @@ function interface {
                 @($_.Ast.FindAll({
                     param($AST)
                     $AST -is [System.Management.Automation.Language.CommandAst]
-                },$true) |ForEach-Object GetCommandName) |Where-Object { $_ -notin 'property','method' }
+                },$true) |ForEach-Object GetCommandName) |Where-Object { $_ -notin 'property','method','event' }
             ) -or $(throw 'Only properties and methods can be defined in an interface')
         })]
         [scriptblock]$Definition,
