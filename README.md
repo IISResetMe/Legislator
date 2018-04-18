@@ -9,13 +9,17 @@ I've heard a number of powershell users ask for the ability to _define_ .NET int
 
 Copy the contents of `src` to a folder called `Legislator` in your module directory, e.g.:
 
-    $modulePath = "C:\Program Files\WindowsPowerShell\Modules"
-    mkdir "$modulePath\Legislator"
-    Copy-Item .\src\* -Destination "$modulePath\Legislator\" -Recurse
+```powershell
+$modulePath = "C:\Program Files\WindowsPowerShell\Modules"
+mkdir "$modulePath\Legislator"
+Copy-Item .\src\* -Destination "$modulePath\Legislator\" -Recurse
+```
 
 Import using `Import-Module` as you would any other module:
 
-    Import-Module Legislator
+```powershell
+Import-Module Legislator
+```
 
 ## Syntax 
 
@@ -62,33 +66,39 @@ is equivalent to the following interface definition in C#:
 
 This example:
 
-    interface IWell {
-        method void DropCoin([Coin])
-    }
+```powershell
+interface IWell {
+    method void DropCoin([Coin])
+}
+```
 
 is equivalent to the following in C#:
 
-    interface IWell
-    {
-        void DropCoin(Coin c);
-    }
+```csharp
+interface IWell
+{
+    void DropCoin(Coin c);
+}
+```
 
 #### `event`
 
 The following event declaration in Legislator:
 
-    interface ICar {
-        event EventHandler[EventArgs] EngineStarted
-    }
+```powershell
+interface ICar {
+    event EventHandler[EventArgs] EngineStarted
+}
+```
 
-is equivalent to:
+is equivalent of C#:
 
-    interface ICar
-    {
-        event EventHandler<EventArgs> EngineStarted;
-    }
-
-in C#
+```csharp
+interface ICar
+{
+    event EventHandler<EventArgs> EngineStarted;
+}
+```
 
 ### Syntax notes
 
@@ -100,98 +110,104 @@ Parameter naming for methods is also not currently support.
 
 The `property` definition supports a ReadOnly option that omits declaration of a property setter:
 
-    interface ITest {
-        property int MyProperty -Option ReadOnly
-    }
+```powershell
+interface ITest {
+    property int MyProperty -Option ReadOnly
+}
+```
 
 is equivalent to the following C# with an explicit getter but no setter:
 
-    interface ITest {
-        int MyProperty
-        {
-            get;
-        }
+```csharp
+interface ITest {
+    int MyProperty
+    {
+        get;
     }
+}
+```
 
 ## Example Usage
 
 The following example defines a (_very_) rudimentary Calculator interface, and utilises it for flexible dependency injection
 
-    Import-Module .\src\Legislator.psd1
-    
-    # Define a calculator interface with two common arithmetic methods
-    interface ICalculator {
-        method int Add ([int],[int])
-        method int Subtract ([int],[int])
-    }
-    
-    # Define a MathStudent class
-    class MathStudent 
+```powershell
+Import-Module .\src\Legislator.psd1
+
+# Define a calculator interface with two common arithmetic methods
+interface ICalculator {
+    method int Add ([int],[int])
+    method int Subtract ([int],[int])
+}
+
+# Define a MathStudent class
+class MathStudent 
+{
+    # Any good student always carries a calculator around
+    hidden [ICalculator]$Calculator
+
+    MathStudent([ICalculator]$Calculator)
     {
-        # Any good student always carries a calculator around
-        hidden [ICalculator]$Calculator
-
-        MathStudent([ICalculator]$Calculator)
-        {
-            $this.Calculator = $Calculator
-        }
-
-        # ehh, 5 was it?
-        [int] Say2plus2()
-        {
-            return $this.Calculator.Add(2,2)
-        }
+        $this.Calculator = $Calculator
     }
-    
-    # This is the most basic calculator implementation
-    class SimpleCalculator : ICalculator
+
+    # ehh, 5 was it?
+    [int] Say2plus2()
     {
-        [int]Add([int]$a, [int]$b)
-        {
-            return $a + $b
-        }
-        
-        [int]Subtract([int]$a, [int]$b)
-        {
-            return $a - $b
-        }
+        return $this.Calculator.Add(2,2)
     }
-    
-    # This is a fancier version!!!
-    class CalculatorPlusPlus : ICalculator
+}
+
+# This is the most basic calculator implementation
+class SimpleCalculator : ICalculator
+{
+    [int]Add([int]$a, [int]$b)
     {
-        [int]Add([int]$a, [int]$b)
-        {
-            return $a + $b
-        }
-        
-        [int]Subtract([int]$a, [int]$b)
-        {
-            return $a - $b
-        }
-
-        [int]Multiply([int]$a, [int]$b)
-        {
-            return $a * $b
-        }
-        
-        [int]Divide([int]$a, [int]$b)
-        {
-            if($b -eq 0){
-                return 0
-            }
-            return $a - $b
-        }
+        return $a + $b
     }
-   
-    # Jimmy comes from a poor family :-(
-    $Jimmy = [MathStudent]::new([SimpleCalculator]::new())
-    
-    # Bobby comes from a long lineage of Ivy league snobs
-    $Bobby = [MathStudent]::new([CalculatorPlusPlus]::new())
 
-    # But any of them will do
-    $Jimmy,$Bobby |ForEach-Object Say2plus2
+    [int]Subtract([int]$a, [int]$b)
+    {
+        return $a - $b
+    }
+}
+
+# This is a fancier version!!!
+class CalculatorPlusPlus : ICalculator
+{
+    [int]Add([int]$a, [int]$b)
+    {
+        return $a + $b
+    }
+
+    [int]Subtract([int]$a, [int]$b)
+    {
+        return $a - $b
+    }
+
+    [int]Multiply([int]$a, [int]$b)
+    {
+        return $a * $b
+    }
+
+    [int]Divide([int]$a, [int]$b)
+    {
+        if($b -eq 0){
+            return 0
+        }
+        return $a - $b
+    }
+}
+
+# Jimmy comes from a poor family :-(
+$Jimmy = [MathStudent]::new([SimpleCalculator]::new())
+
+# Bobby comes from a long lineage of Ivy league snobs
+$Bobby = [MathStudent]::new([CalculatorPlusPlus]::new())
+
+# But any of them will do
+$Jimmy,$Bobby |ForEach-Object Say2plus2
+```
 
 ## Contributing
 
