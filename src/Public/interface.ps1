@@ -20,6 +20,10 @@ function interface {
         [scriptblock]$Definition,
 
         [Parameter()]
+        [ValidateScript({-not($_ |Where-Object{-not $_.IsInterface})})]
+        [type[]]$Implements,
+
+        [Parameter()]
         [switch]$PassThru = $false
     )
 
@@ -38,6 +42,18 @@ function interface {
     $moduleBuilder = $assemblyBuilder.DefineDynamicModule("__psinterfacemodule_$assemblyName")
 
     $Legislator = $moduleBuilder.DefineType($Name, $interfaceAttributes)
+
+    if($PSBoundParameters.ContainsKey('Implements')){
+        foreach($interfaceImpl in $Implements |Sort-Object -Property FullName -Unique){
+            try{
+                $Legislator.AddInterfaceImplementation($interfaceImpl)
+            }
+            catch{
+                throw
+                return
+            }
+        }
+    }
 
     $null = . $Definition
 
