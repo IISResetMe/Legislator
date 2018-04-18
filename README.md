@@ -100,6 +100,26 @@ interface ICar
 }
 ```
 
+#### Multiple interface
+
+Legislator also supports chaining multiple interfaces, via the `Implements` parameter.
+
+The following interface declaration in Legislator:
+
+```powershell
+interface ICrappyCar {
+    event EventHandler[EventArgs] EngineBroke
+} -Implements IDisposable
+```
+
+is equivalent to the following in C#:
+
+```csharp
+interface ICrappyCar : IDisposable {
+    event EventHandler<EventArgs> EngineBroke
+}
+```
+
 ### Syntax notes
 
 Legislator currently supports `method`, `property` and `event` members. No plans to supporting index accessor syntax.
