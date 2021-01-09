@@ -7,6 +7,16 @@ I've heard a number of powershell users ask for the ability to _define_ .NET int
 
 ## Installation
 
+### From PowerShell Gallery
+
+Legislator is listed on PowerShell Gallery
+
+```powershell
+Install-Module Legislator
+```
+
+### Manual installation
+
 Copy the contents of `src` to a folder called `Legislator` in your module directory, e.g.:
 
 ```powershell
@@ -151,83 +161,9 @@ interface ITest {
 
 The following example defines a (_very_) rudimentary Calculator interface, and utilises it for flexible dependency injection
 
-```powershell
-Import-Module .\src\Legislator.psd1
+<script src="https://gist.github.com/IISResetMe/ce158e711ea0ed0d0fb4b69bf3701a41.js"></script>
 
-# Define a calculator interface with two common arithmetic methods
-interface ICalculator {
-    method int Add ([int],[int])
-    method int Subtract ([int],[int])
-}
-
-# Define a MathStudent class
-class MathStudent 
-{
-    # Any good student always carries a calculator around
-    hidden [ICalculator]$Calculator
-
-    MathStudent([ICalculator]$Calculator)
-    {
-        $this.Calculator = $Calculator
-    }
-
-    # ehh, 5 was it?
-    [int] Say2plus2()
-    {
-        return $this.Calculator.Add(2,2)
-    }
-}
-
-# This is the most basic calculator implementation
-class SimpleCalculator : ICalculator
-{
-    [int]Add([int]$a, [int]$b)
-    {
-        return $a + $b
-    }
-
-    [int]Subtract([int]$a, [int]$b)
-    {
-        return $a - $b
-    }
-}
-
-# This is a fancier version!!!
-class CalculatorPlusPlus : ICalculator
-{
-    [int]Add([int]$a, [int]$b)
-    {
-        return $a + $b
-    }
-
-    [int]Subtract([int]$a, [int]$b)
-    {
-        return $a - $b
-    }
-
-    [int]Multiply([int]$a, [int]$b)
-    {
-        return $a * $b
-    }
-
-    [int]Divide([int]$a, [int]$b)
-    {
-        if($b -eq 0){
-            return 0
-        }
-        return $a - $b
-    }
-}
-
-# Jimmy comes from a poor family :-(
-$Jimmy = [MathStudent]::new([SimpleCalculator]::new())
-
-# Bobby comes from a long lineage of Ivy league snobs
-$Bobby = [MathStudent]::new([CalculatorPlusPlus]::new())
-
-# But any of them will do
-$Jimmy,$Bobby |ForEach-Object Say2plus2
-```
+See also: [IPasswordPolicy](https://github.com/IISResetMe/IPasswordPolicy), a strategy pattern example implementing a Legislator-defined interface
 
 ## Contributing
 
