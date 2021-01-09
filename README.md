@@ -9,7 +9,7 @@ I've heard a number of powershell users ask for the ability to _define_ .NET int
 
 ### From PowerShell Gallery
 
-Legislator is listed on PowerShell Gallery
+Legislator is listed on PowerShell Gallery and can be installed with a single command:
 
 ```powershell
 Install-Module Legislator
@@ -159,11 +159,13 @@ interface ITest {
 
 ## Example Usage
 
-The following example defines a (_very_) rudimentary Calculator interface, and utilises it for flexible dependency injection
+The following example defines a (_very_) rudimentary Calculator interface, and uses it for flexible dependency injection:
 
-<script src="https://gist.github.com/IISResetMe/ce158e711ea0ed0d0fb4b69bf3701a41.js"></script>
+- [ICalculator](https://gist.github.com/IISResetMe/ce158e711ea0ed0d0fb4b69bf3701a41)
 
-See also: [IPasswordPolicy](https://github.com/IISResetMe/IPasswordPolicy), a strategy pattern example implementing a Legislator-defined interface
+See also this strategy pattern example implementing a Legislator-defined interface:
+
+- [IPasswordPolicy](https://github.com/IISResetMe/IPasswordPolicy)
 
 ## Contributing
 
