@@ -22,7 +22,7 @@ function property {
         $Type = [Type]$TypeName
     }
     catch {
-        throw [Exception]::new('Unrecognized type name', $_)
+        throw [Exception]::new('Unrecognized type name', $_.Exception)
         return
     }
 

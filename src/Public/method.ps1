@@ -28,7 +28,7 @@ function method {
         $ReturnType = [Type]$TypeName
     }
     catch {
-        throw [Exception]::new('Unrecognized type name', $_)
+        throw [Exception]::new('Unrecognized type name', $_.Exception)
         return
     }
 
