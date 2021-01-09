@@ -35,10 +35,7 @@ function interface {
         'Public','Interface','Abstract','AnsiClass','AutoLayout'
     ) -as [TypeAttributes]
 
-    $runtimeGuid = $((New-Guid)-replace'\W')
-
-    $assemblyName = [AssemblyName]::new("$Name$runtimeGuid")
-    $assemblyBuilder = [AppDomain]::CurrentDomain.DefineDynamicAssembly($assemblyName, [AssemblyBuilderAccess]::Run)
+    $assemblyBuilder = New-AssemblyBuilder -Name $Name
     $moduleBuilder = $assemblyBuilder.DefineDynamicModule("__psinterfacemodule_$assemblyName")
 
     $Legislator = $moduleBuilder.DefineType($Name, $interfaceAttributes)
@@ -55,23 +52,15 @@ function interface {
         }
     }
 
-    $null = . $Definition
-
-    $finalType = $Legislator.CreateType()
-
-    if($PassThru){
-        return $finalType
+    try{
+        $null = . $Definition
+        $finalType = $Legislator.CreateType()
+        
+        if($PassThru){
+            return $finalType
+        }
     }
-}
-
-function Assert-Legislator
-{
-    param (
-        [string]$MemberType
-    )
-
-    if (-not $Legislator)
-    {
-        throw "$MemberType only allowed in interface declarations"
+    catch{
+        throw
     }
 }
